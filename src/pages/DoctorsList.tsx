@@ -14,9 +14,9 @@ const mockDoctors = [
     name: "Dr. Sarah Johnson",
     specialty: "Cardiology",
     experience: 15,
-    region: "north",
+    region: "mumbai",
     clinicName: "Heart Care Clinic",
-    address: "123 Medical Plaza, North District",
+    address: "123 Marine Drive, Mumbai",
     rating: 4.8,
     reviews: 120,
     consultationFee: 75,
@@ -29,9 +29,9 @@ const mockDoctors = [
     name: "Dr. Michael Chen",
     specialty: "Dermatology",
     experience: 10,
-    region: "south",
+    region: "pune",
     clinicName: "Skin & Beauty Center",
-    address: "456 Health Avenue, South District",
+    address: "456 FC Road, Pune",
     rating: 4.9,
     reviews: 95,
     consultationFee: 60,
@@ -44,9 +44,9 @@ const mockDoctors = [
     name: "Dr. Emily Williams",
     specialty: "Pediatrics",
     experience: 12,
-    region: "east",
+    region: "nagpur",
     clinicName: "Children's Health Center",
-    address: "789 Care Street, East District",
+    address: "789 Sitabuldi, Nagpur",
     rating: 5.0,
     reviews: 150,
     consultationFee: 50,
@@ -59,9 +59,9 @@ const mockDoctors = [
     name: "Dr. James Wilson",
     specialty: "Orthopedics",
     experience: 18,
-    region: "west",
+    region: "nashik",
     clinicName: "Bone & Joint Institute",
-    address: "321 Medical Center, West District",
+    address: "321 College Road, Nashik",
     rating: 4.7,
     reviews: 88,
     consultationFee: 80,
@@ -74,9 +74,9 @@ const mockDoctors = [
     name: "Dr. Priya Sharma",
     specialty: "General Physician",
     experience: 8,
-    region: "central",
+    region: "thane",
     clinicName: "Family Wellness Clinic",
-    address: "555 Community Road, Central District",
+    address: "555 Ghodbunder Road, Thane",
     rating: 4.6,
     reviews: 110,
     consultationFee: 40,
@@ -89,9 +89,9 @@ const mockDoctors = [
     name: "Dr. Robert Taylor",
     specialty: "Neurology",
     experience: 20,
-    region: "north",
+    region: "mumbai",
     clinicName: "Brain & Nerve Center",
-    address: "888 Neuroscience Blvd, North District",
+    address: "888 Andheri West, Mumbai",
     rating: 4.9,
     reviews: 75,
     consultationFee: 90,
@@ -184,15 +184,18 @@ const DoctorsList = () => {
                 <label className="text-sm font-medium">Region</label>
                 <Select value={selectedRegion} onValueChange={setSelectedRegion}>
                   <SelectTrigger>
-                    <SelectValue placeholder="All regions" />
+                    <SelectValue placeholder="All cities" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Regions</SelectItem>
-                    <SelectItem value="north">North Region</SelectItem>
-                    <SelectItem value="south">South Region</SelectItem>
-                    <SelectItem value="east">East Region</SelectItem>
-                    <SelectItem value="west">West Region</SelectItem>
-                    <SelectItem value="central">Central Region</SelectItem>
+                    <SelectItem value="all">All Cities</SelectItem>
+                    <SelectItem value="mumbai">Mumbai</SelectItem>
+                    <SelectItem value="pune">Pune</SelectItem>
+                    <SelectItem value="nagpur">Nagpur</SelectItem>
+                    <SelectItem value="nashik">Nashik</SelectItem>
+                    <SelectItem value="aurangabad">Aurangabad</SelectItem>
+                    <SelectItem value="thane">Thane</SelectItem>
+                    <SelectItem value="kolhapur">Kolhapur</SelectItem>
+                    <SelectItem value="solapur">Solapur</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -269,7 +272,7 @@ const DoctorsList = () => {
                         </div>
                         <div className="flex items-center gap-2">
                           <MapPin className="h-4 w-4 text-primary" />
-                          <span className="text-sm capitalize">{doctor.region} Region</span>
+                          <span className="text-sm capitalize">{doctor.region}</span>
                         </div>
                       </div>
 
