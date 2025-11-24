@@ -101,14 +101,17 @@ const Home = () => {
                       <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground z-10" />
                       <Select value={selectedRegion} onValueChange={setSelectedRegion}>
                         <SelectTrigger className="pl-10">
-                          <SelectValue placeholder="Select your region" />
+                          <SelectValue placeholder="Select your city" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="north">North Region</SelectItem>
-                          <SelectItem value="south">South Region</SelectItem>
-                          <SelectItem value="east">East Region</SelectItem>
-                          <SelectItem value="west">West Region</SelectItem>
-                          <SelectItem value="central">Central Region</SelectItem>
+                          <SelectItem value="mumbai">Mumbai</SelectItem>
+                          <SelectItem value="pune">Pune</SelectItem>
+                          <SelectItem value="nagpur">Nagpur</SelectItem>
+                          <SelectItem value="nashik">Nashik</SelectItem>
+                          <SelectItem value="aurangabad">Aurangabad</SelectItem>
+                          <SelectItem value="thane">Thane</SelectItem>
+                          <SelectItem value="kolhapur">Kolhapur</SelectItem>
+                          <SelectItem value="solapur">Solapur</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

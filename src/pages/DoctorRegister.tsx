@@ -191,17 +191,20 @@ const DoctorRegister = () => {
 
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="region">Region *</Label>
+                    <Label htmlFor="region">City *</Label>
                     <Select value={formData.region} onValueChange={(value) => handleChange("region", value)}>
                       <SelectTrigger id="region">
-                        <SelectValue placeholder="Select region" />
+                        <SelectValue placeholder="Select city" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="north">North Region</SelectItem>
-                        <SelectItem value="south">South Region</SelectItem>
-                        <SelectItem value="east">East Region</SelectItem>
-                        <SelectItem value="west">West Region</SelectItem>
-                        <SelectItem value="central">Central Region</SelectItem>
+                        <SelectItem value="mumbai">Mumbai</SelectItem>
+                        <SelectItem value="pune">Pune</SelectItem>
+                        <SelectItem value="nagpur">Nagpur</SelectItem>
+                        <SelectItem value="nashik">Nashik</SelectItem>
+                        <SelectItem value="aurangabad">Aurangabad</SelectItem>
+                        <SelectItem value="thane">Thane</SelectItem>
+                        <SelectItem value="kolhapur">Kolhapur</SelectItem>
+                        <SelectItem value="solapur">Solapur</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
