@@ -125,7 +125,7 @@ const DoctorsList = () => {
     }
 
     // Filter by region
-    if (selectedRegion) {
+    if (selectedRegion && selectedRegion !== "all") {
       filtered = filtered.filter(doctor => doctor.region === selectedRegion);
     }
 
@@ -187,7 +187,7 @@ const DoctorsList = () => {
                     <SelectValue placeholder="All regions" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Regions</SelectItem>
+                    <SelectItem value="all">All Regions</SelectItem>
                     <SelectItem value="north">North Region</SelectItem>
                     <SelectItem value="south">South Region</SelectItem>
                     <SelectItem value="east">East Region</SelectItem>
@@ -227,7 +227,7 @@ const DoctorsList = () => {
             <Card>
               <CardContent className="text-center py-12">
                 <p className="text-muted-foreground text-lg">No doctors found matching your criteria.</p>
-                <Button variant="outline" onClick={() => { setSearchQuery(""); setSelectedRegion(""); }} className="mt-4">
+                <Button variant="outline" onClick={() => { setSearchQuery(""); setSelectedRegion("all"); }} className="mt-4">
                   Clear Filters
                 </Button>
               </CardContent>
