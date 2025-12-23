@@ -5,106 +5,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Stethoscope, MapPin, Star, Calendar, ArrowLeft, Search, DollarSign } from "lucide-react";
-
-// Mock data for doctors
-const mockDoctors = [
-  {
-    id: 1,
-    name: "Dr. Sarah Johnson",
-    specialty: "Cardiology",
-    experience: 15,
-    region: "mumbai",
-    clinicName: "Heart Care Clinic",
-    address: "123 Marine Drive, Mumbai",
-    rating: 4.8,
-    reviews: 120,
-    consultationFee: 75,
-    availability: "Available Today",
-    qualifications: "MBBS, MD - Cardiology",
-    about: "Specialized in heart diseases and cardiovascular health with over 15 years of experience."
-  },
-  {
-    id: 2,
-    name: "Dr. Michael Chen",
-    specialty: "Dermatology",
-    experience: 10,
-    region: "pune",
-    clinicName: "Skin & Beauty Center",
-    address: "456 FC Road, Pune",
-    rating: 4.9,
-    reviews: 95,
-    consultationFee: 60,
-    availability: "Available Tomorrow",
-    qualifications: "MBBS, MD - Dermatology",
-    about: "Expert in skin conditions, cosmetic dermatology, and laser treatments."
-  },
-  {
-    id: 3,
-    name: "Dr. Emily Williams",
-    specialty: "Pediatrics",
-    experience: 12,
-    region: "nagpur",
-    clinicName: "Children's Health Center",
-    address: "789 Sitabuldi, Nagpur",
-    rating: 5.0,
-    reviews: 150,
-    consultationFee: 50,
-    availability: "Available Today",
-    qualifications: "MBBS, DCH - Pediatrics",
-    about: "Passionate about child healthcare, vaccinations, and developmental monitoring."
-  },
-  {
-    id: 4,
-    name: "Dr. James Wilson",
-    specialty: "Orthopedics",
-    experience: 18,
-    region: "nashik",
-    clinicName: "Bone & Joint Institute",
-    address: "321 College Road, Nashik",
-    rating: 4.7,
-    reviews: 88,
-    consultationFee: 80,
-    availability: "Available on Mon, Wed",
-    qualifications: "MBBS, MS - Orthopedics",
-    about: "Specializing in sports injuries, joint replacements, and spine surgeries."
-  },
-  {
-    id: 5,
-    name: "Dr. Priya Sharma",
-    specialty: "General Physician",
-    experience: 8,
-    region: "thane",
-    clinicName: "Family Wellness Clinic",
-    address: "555 Ghodbunder Road, Thane",
-    rating: 4.6,
-    reviews: 110,
-    consultationFee: 40,
-    availability: "Available Today",
-    qualifications: "MBBS, MD - General Medicine",
-    about: "Providing comprehensive primary care for all ages with a focus on preventive medicine."
-  },
-  {
-    id: 6,
-    name: "Dr. Robert Taylor",
-    specialty: "Neurology",
-    experience: 20,
-    region: "mumbai",
-    clinicName: "Brain & Nerve Center",
-    address: "888 Andheri West, Mumbai",
-    rating: 4.9,
-    reviews: 75,
-    consultationFee: 90,
-    availability: "By Appointment",
-    qualifications: "MBBS, DM - Neurology",
-    about: "Expert in treating neurological disorders, migraines, and epilepsy."
-  }
-];
+import { Stethoscope, MapPin, Star, Calendar, ArrowLeft, Search, IndianRupee } from "lucide-react";
+import { doctorsData, Doctor } from "@/data/doctorsData";
 
 const DoctorsList = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [doctors, setDoctors] = useState(mockDoctors);
+  const [doctors, setDoctors] = useState<Doctor[]>(doctorsData);
   const [searchQuery, setSearchQuery] = useState(searchParams.get("disease") || "");
   const [selectedRegion, setSelectedRegion] = useState(searchParams.get("region") || "");
   const [sortBy, setSortBy] = useState("rating");
@@ -114,7 +21,7 @@ const DoctorsList = () => {
   }, [searchQuery, selectedRegion, sortBy]);
 
   const filterDoctors = () => {
-    let filtered = [...mockDoctors];
+    let filtered = [...doctorsData];
 
     // Filter by search query (specialty)
     if (searchQuery) {
@@ -280,8 +187,8 @@ const DoctorsList = () => {
 
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                          <DollarSign className="h-4 w-4 text-primary" />
-                          <span className="font-semibold text-foreground">${doctor.consultationFee}</span>
+                          <IndianRupee className="h-4 w-4 text-primary" />
+                          <span className="font-semibold text-foreground">₹{doctor.consultationFee}</span>
                           <span className="text-sm text-muted-foreground">consultation fee</span>
                         </div>
                         <Badge variant={doctor.availability.includes("Today") ? "default" : "secondary"}>
