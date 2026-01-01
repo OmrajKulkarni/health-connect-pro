@@ -14,16 +14,161 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      appointments: {
+        Row: {
+          appointment_date: string
+          appointment_time: string
+          created_at: string | null
+          doctor_id: string
+          id: string
+          patient_id: string
+          reason: string | null
+          status: string | null
+        }
+        Insert: {
+          appointment_date: string
+          appointment_time: string
+          created_at?: string | null
+          doctor_id: string
+          id?: string
+          patient_id: string
+          reason?: string | null
+          status?: string | null
+        }
+        Update: {
+          appointment_date?: string
+          appointment_time?: string
+          created_at?: string | null
+          doctor_id?: string
+          id?: string
+          patient_id?: string
+          reason?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_doctor_id_fkey"
+            columns: ["doctor_id"]
+            isOneToOne: false
+            referencedRelation: "doctors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      doctors: {
+        Row: {
+          about: string | null
+          address: string | null
+          availability: string | null
+          clinic_name: string
+          consultation_fee: number | null
+          created_at: string | null
+          experience: number | null
+          id: string
+          name: string
+          phone: string | null
+          qualifications: string | null
+          rating: number | null
+          region: string
+          reviews: number | null
+          specialty: string
+          user_id: string | null
+        }
+        Insert: {
+          about?: string | null
+          address?: string | null
+          availability?: string | null
+          clinic_name: string
+          consultation_fee?: number | null
+          created_at?: string | null
+          experience?: number | null
+          id?: string
+          name: string
+          phone?: string | null
+          qualifications?: string | null
+          rating?: number | null
+          region: string
+          reviews?: number | null
+          specialty: string
+          user_id?: string | null
+        }
+        Update: {
+          about?: string | null
+          address?: string | null
+          availability?: string | null
+          clinic_name?: string
+          consultation_fee?: number | null
+          created_at?: string | null
+          experience?: number | null
+          id?: string
+          name?: string
+          phone?: string | null
+          qualifications?: string | null
+          rating?: number | null
+          region?: string
+          reviews?: number | null
+          specialty?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string
+          full_name: string
+          id: string
+          phone: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          full_name: string
+          id: string
+          phone?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          phone?: string | null
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "patient" | "doctor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +295,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["patient", "doctor"],
+    },
   },
 } as const
