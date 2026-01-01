@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -6,8 +6,11 @@ import { Calendar } from "@/components/ui/calendar";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Stethoscope, ArrowLeft, Calendar as CalendarIcon, Clock } from "lucide-react";
+import { Stethoscope, ArrowLeft, Calendar as CalendarIcon, Clock, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useDoctorById } from "@/hooks/useDoctors";
+import { useAuth } from "@/hooks/useAuth";
 
 const BookAppointment = () => {
   const navigate = useNavigate();
@@ -17,13 +20,22 @@ const BookAppointment = () => {
   const [reason, setReason] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const { doctor, loading: doctorLoading } = useDoctorById(doctorId);
+  const { user, loading: authLoading } = useAuth();
+
   // Mock available time slots
   const timeSlots = [
     "09:00 AM", "09:30 AM", "10:00 AM", "10:30 AM", "11:00 AM", "11:30 AM",
     "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM", "04:00 PM", "04:30 PM", "05:00 PM"
   ];
 
-  const handleBooking = () => {
+  const handleBooking = async () => {
+    if (!user) {
+      toast.error("Please login to book an appointment");
+      navigate("/patient-auth");
+      return;
+    }
+
     if (!selectedDate) {
       toast.error("Please select a date");
       return;
@@ -39,13 +51,36 @@ const BookAppointment = () => {
 
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const { error } = await supabase
+        .from("appointments")
+        .insert({
+          patient_id: user.id,
+          doctor_id: doctorId,
+          appointment_date: selectedDate.toISOString().split('T')[0],
+          appointment_time: selectedTime,
+          reason: reason.trim(),
+          status: "pending"
+        });
+
+      if (error) throw error;
+
       toast.success("Appointment booked successfully! You'll receive a confirmation email.");
       navigate("/");
-    }, 2000);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to book appointment");
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  if (doctorLoading || authLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -66,8 +101,20 @@ const BookAppointment = () => {
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-foreground mb-2">Book Your Appointment</h2>
-          <p className="text-muted-foreground">Choose your preferred date and time</p>
+          {doctor && (
+            <p className="text-muted-foreground">with <span className="font-semibold text-foreground">{doctor.name}</span> - {doctor.specialty}</p>
+          )}
         </div>
+
+        {!user && (
+          <Card className="mb-6 border-primary/50 bg-primary/5">
+            <CardContent className="py-4">
+              <p className="text-foreground">
+                Please <Button variant="link" className="px-1 h-auto" onClick={() => navigate("/patient-auth")}>login</Button> to book an appointment
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Date Selection */}
@@ -165,7 +212,7 @@ const BookAppointment = () => {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-muted-foreground">Consultation Fee:</span>
-                <span className="font-semibold text-foreground text-lg">$75</span>
+                <span className="font-semibold text-foreground text-lg">₹{doctor?.consultation_fee || 500}</span>
               </div>
             </div>
             
@@ -174,7 +221,7 @@ const BookAppointment = () => {
               size="lg"
               className="w-full mt-6"
               onClick={handleBooking}
-              disabled={isLoading || !selectedDate || !selectedTime}
+              disabled={isLoading || !selectedDate || !selectedTime || !user}
             >
               {isLoading ? "Booking..." : "Confirm Appointment"}
             </Button>

@@ -7,9 +7,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import { Stethoscope, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 const PatientAuth = () => {
   const navigate = useNavigate();
+  const { signIn, signUp } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   // Login form
@@ -27,12 +29,18 @@ const PatientAuth = () => {
     e.preventDefault();
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const { error } = await signIn(loginEmail, loginPassword);
+      
+      if (error) throw error;
+      
       toast.success("Login successful!");
       navigate("/");
-    }, 1500);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Login failed");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -50,11 +58,26 @@ const PatientAuth = () => {
 
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const { error } = await signUp(
+        registerEmail,
+        registerPassword,
+        {
+          full_name: registerName,
+          phone: registerPhone,
+          role: 'patient'
+        }
+      );
+      
+      if (error) throw error;
+      
+      toast.success("Registration successful! You are now logged in.");
+      navigate("/");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Registration failed");
+    } finally {
       setIsLoading(false);
-      toast.success("Registration successful! Please login.");
-    }, 1500);
+    }
   };
 
   return (
@@ -155,7 +178,7 @@ const PatientAuth = () => {
                     <Input
                       id="register-phone"
                       type="tel"
-                      placeholder="+1 (555) 000-0000"
+                      placeholder="+91 98765 43210"
                       value={registerPhone}
                       onChange={(e) => setRegisterPhone(e.target.value)}
                       required
