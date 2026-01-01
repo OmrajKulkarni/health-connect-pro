@@ -8,9 +8,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Stethoscope, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const DoctorRegister = () => {
   const navigate = useNavigate();
+  const { signUp } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -48,12 +51,51 @@ const DoctorRegister = () => {
 
     setIsLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      // Create auth user with doctor role
+      const { data: authData, error: authError } = await signUp(
+        formData.email,
+        formData.password,
+        {
+          full_name: formData.name,
+          phone: formData.phone,
+          role: 'doctor'
+        }
+      );
+
+      if (authError) throw authError;
+
+      // Create doctor profile
+      if (authData.user) {
+        const { error: doctorError } = await supabase
+          .from("doctors")
+          .insert({
+            user_id: authData.user.id,
+            name: formData.name.startsWith("Dr.") ? formData.name : `Dr. ${formData.name}`,
+            specialty: formData.specialty,
+            experience: parseInt(formData.experience) || 0,
+            region: formData.region,
+            clinic_name: formData.clinicName,
+            address: formData.clinicAddress,
+            consultation_fee: parseInt(formData.consultation_fee) || 500,
+            qualifications: formData.qualifications,
+            about: formData.about || `Specialist in ${formData.specialty}`,
+            phone: formData.phone,
+            rating: 4.0,
+            reviews: 0,
+            availability: "Available Today"
+          });
+
+        if (doctorError) throw doctorError;
+      }
+
+      toast.success("Registration successful! Your profile is now visible to patients.");
+      navigate("/doctors");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Registration failed");
+    } finally {
       setIsLoading(false);
-      toast.success("Registration submitted! We'll review and get back to you.");
-      navigate("/");
-    }, 2000);
+    }
   };
 
   return (
@@ -112,7 +154,7 @@ const DoctorRegister = () => {
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="+1 (555) 000-0000"
+                      placeholder="+91 98765 43210"
                       value={formData.phone}
                       onChange={(e) => handleChange("phone", e.target.value)}
                       required
@@ -125,14 +167,16 @@ const DoctorRegister = () => {
                         <SelectValue placeholder="Select specialty" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="cardiology">Cardiology</SelectItem>
-                        <SelectItem value="dermatology">Dermatology</SelectItem>
-                        <SelectItem value="neurology">Neurology</SelectItem>
-                        <SelectItem value="orthopedics">Orthopedics</SelectItem>
-                        <SelectItem value="pediatrics">Pediatrics</SelectItem>
-                        <SelectItem value="psychiatry">Psychiatry</SelectItem>
-                        <SelectItem value="general">General Physician</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
+                        <SelectItem value="Cardiology">Cardiology</SelectItem>
+                        <SelectItem value="Dermatology">Dermatology</SelectItem>
+                        <SelectItem value="Neurology">Neurology</SelectItem>
+                        <SelectItem value="Orthopedics">Orthopedics</SelectItem>
+                        <SelectItem value="Pediatrics">Pediatrics</SelectItem>
+                        <SelectItem value="Psychiatry">Psychiatry</SelectItem>
+                        <SelectItem value="General Physician">General Physician</SelectItem>
+                        <SelectItem value="Diabetes">Diabetes</SelectItem>
+                        <SelectItem value="Cancer">Cancer</SelectItem>
+                        <SelectItem value="Heart disease">Heart disease</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -209,12 +253,12 @@ const DoctorRegister = () => {
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="consultation_fee">Consultation Fee ($) *</Label>
+                    <Label htmlFor="consultation_fee">Consultation Fee (₹) *</Label>
                     <Input
                       id="consultation_fee"
                       type="number"
                       min="0"
-                      placeholder="50"
+                      placeholder="500"
                       value={formData.consultation_fee}
                       onChange={(e) => handleChange("consultation_fee", e.target.value)}
                       required
